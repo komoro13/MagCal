@@ -1,0 +1,235 @@
+[p GLOBOPT AUTOSTATIC IEEE_DBL IEEE_FLT PIC14 PICREGULAR PICMID ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 16F877A ]
+[d frameptr 0 ]
+"5 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\ADC.c
+[v _ADC_init ADC_init `(v  1 e 1 0 ]
+"10
+[v _ADC_read ADC_read `(i  1 e 2 0 ]
+"4 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\itoa.c
+[v _itoa itoa `(*.4uc  1 e 1 0 ]
+"17
+[v _utoa utoa `(*.4uc  1 e 1 0 ]
+"5 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\lwdiv.c
+[v ___lwdiv __lwdiv `(ui  1 e 2 0 ]
+"5 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\lwmod.c
+[v ___lwmod __lwmod `(ui  1 e 2 0 ]
+"10 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"4 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\Umul8_16.c
+[v __Umul8_16 _Umul8_16 `(ui  1 e 2 0 ]
+"6 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\pic\__eeprom.c
+[v ___eecpymem __eecpymem `(v  1 e 1 0 ]
+"39
+[v ___memcpyee __memcpyee `(v  1 e 1 0 ]
+"10 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\LCD.c
+[v _LCD_Write_String LCD_Write_String `(v  1 e 1 0 ]
+"35
+[v _LCD_command LCD_command `(v  1 e 1 0 ]
+"44
+[v _LCD_write_char LCD_write_char `(v  1 e 1 0 ]
+"53
+[v _LCD_init LCD_init `(v  1 e 1 0 ]
+"15 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\main.c
+[v _main main `(i  1 e 2 0 ]
+"19 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\UART.c
+[v _putch putch `(v  1 e 1 0 ]
+"216 C:/Program Files (x86)/Microchip/MPLABX/v5.40/packs/Microchip/PIC16Fxxx_DFP/1.2.33/xc8\pic\include\proc\pic16f877a.h
+[v _PORTB PORTB `VEuc  1 e 1 @6 ]
+"808
+[v _SSPBUF SSPBUF `VEuc  1 e 1 @19 ]
+"815
+[v _SSPCON SSPCON `VEuc  1 e 1 @20 ]
+"1059
+[v _TXREG TXREG `VEuc  1 e 1 @25 ]
+"1066
+[v _RCREG RCREG `VEuc  1 e 1 @26 ]
+"1152
+[v _ADRESH ADRESH `VEuc  1 e 1 @30 ]
+"1159
+[v _ADCON0 ADCON0 `VEuc  1 e 1 @31 ]
+[s S108 . 1 `uc 1 ADON 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 GO_nDONE 1 0 :1:2 
+`uc 1 CHS 1 0 :3:3 
+`uc 1 ADCS 1 0 :2:6 
+]
+"1190
+[s S114 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 GO 1 0 :1:2 
+`uc 1 CHS0 1 0 :1:3 
+`uc 1 CHS1 1 0 :1:4 
+`uc 1 CHS2 1 0 :1:5 
+`uc 1 ADCS0 1 0 :1:6 
+`uc 1 ADCS1 1 0 :1:7 
+]
+[s S122 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 nDONE 1 0 :1:2 
+]
+[s S125 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 GO_DONE 1 0 :1:2 
+]
+[u S128 . 1 `S108 1 . 1 0 `S114 1 . 1 0 `S122 1 . 1 0 `S125 1 . 1 0 ]
+[v _ADCON0bits ADCON0bits `VES128  1 e 1 @31 ]
+"1375
+[v _TRISB TRISB `VEuc  1 e 1 @134 ]
+"1437
+[v _TRISC TRISC `VEuc  1 e 1 @135 ]
+"1823
+[v _SSPADD SSPADD `VEuc  1 e 1 @147 ]
+"1830
+[v _SSPSTAT SSPSTAT `VEuc  1 e 1 @148 ]
+"2080
+[v _SPBRG SPBRG `VEuc  1 e 1 @153 ]
+"2222
+[v _ADRESL ADRESL `VEuc  1 e 1 @158 ]
+"2229
+[v _ADCON1 ADCON1 `VEuc  1 e 1 @159 ]
+"2380
+[v _ACKSTAT ACKSTAT `VEb  1 e 0 @1166 ]
+"2404
+[v _ADON ADON `VEb  1 e 0 @248 ]
+"2416
+[v _BRGH BRGH `VEb  1 e 0 @1218 ]
+"2515
+[v _CREN CREN `VEb  1 e 0 @196 ]
+"2575
+[v _GO_DONE GO_DONE `VEb  1 e 0 @250 ]
+"2632
+[v _PEN PEN `VEb  1 e 0 @1162 ]
+"2707
+[v _RC1 RC1 `VEb  1 e 0 @57 ]
+"2716
+[v _RC4 RC4 `VEb  1 e 0 @60 ]
+"2719
+[v _RC5 RC5 `VEb  1 e 0 @61 ]
+"2725
+[v _RC7 RC7 `VEb  1 e 0 @63 ]
+"2743
+[v _RCIF RCIF `VEb  1 e 0 @101 ]
+"2794
+[v _RX9 RX9 `VEb  1 e 0 @198 ]
+"2806
+[v _SEN SEN `VEb  1 e 0 @1160 ]
+"2812
+[v _SPEN SPEN `VEb  1 e 0 @199 ]
+"2824
+[v _SSPIF SSPIF `VEb  1 e 0 @99 ]
+"2842
+[v _SYNC SYNC `VEb  1 e 0 @1220 ]
+"2968
+[v _TRISC3 TRISC3 `VEb  1 e 0 @1083 ]
+"2971
+[v _TRISC4 TRISC4 `VEb  1 e 0 @1084 ]
+"2977
+[v _TRISC6 TRISC6 `VEb  1 e 0 @1086 ]
+"2980
+[v _TRISC7 TRISC7 `VEb  1 e 0 @1087 ]
+"3022
+[v _TX9 TX9 `VEb  1 e 0 @1222 ]
+"3031
+[v _TXEN TXEN `VEb  1 e 0 @1221 ]
+"3037
+[v _TXIF TXIF `VEb  1 e 0 @100 ]
+"15 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\main.c
+[v _main main `(i  1 e 2 0 ]
+{
+"44
+[v main@buffer buffer `[7]uc  1 a 7 13 ]
+"43
+[v main@outcome outcome `i  1 a 2 20 ]
+"76
+} 0
+"4 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\itoa.c
+[v _itoa itoa `(*.4uc  1 e 1 0 ]
+{
+[v itoa@buf buf `*.4uc  1 a 1 wreg ]
+[v itoa@buf buf `*.4uc  1 a 1 wreg ]
+[v itoa@val val `i  1 p 2 4 ]
+[v itoa@base base `i  1 p 2 6 ]
+[v itoa@buf buf `*.4uc  1 a 1 9 ]
+"14
+} 0
+"17
+[v _utoa utoa `(*.4uc  1 e 1 0 ]
+{
+[v utoa@buf buf `*.4uc  1 a 1 wreg ]
+"19
+[v utoa@v v `ui  1 a 2 0 ]
+"20
+[v utoa@c c `uc  1 a 1 2 ]
+"17
+[v utoa@buf buf `*.4uc  1 a 1 wreg ]
+[v utoa@val val `ui  1 p 2 8 ]
+[v utoa@base base `i  1 p 2 10 ]
+"22
+[v utoa@buf buf `*.4uc  1 a 1 3 ]
+"37
+} 0
+"5 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\lwmod.c
+[v ___lwmod __lwmod `(ui  1 e 2 0 ]
+{
+"10
+[v ___lwmod@counter counter `uc  1 a 1 5 ]
+"5
+[v ___lwmod@divisor divisor `ui  1 p 2 0 ]
+[v ___lwmod@dividend dividend `ui  1 p 2 2 ]
+"25
+} 0
+"5 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\common\lwdiv.c
+[v ___lwdiv __lwdiv `(ui  1 e 2 0 ]
+{
+"10
+[v ___lwdiv@quotient quotient `ui  1 a 2 5 ]
+"11
+[v ___lwdiv@counter counter `uc  1 a 1 7 ]
+"5
+[v ___lwdiv@divisor divisor `ui  1 p 2 0 ]
+[v ___lwdiv@dividend dividend `ui  1 p 2 2 ]
+"30
+} 0
+"53 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\LCD.c
+[v _LCD_init LCD_init `(v  1 e 1 0 ]
+{
+"62
+} 0
+"35
+[v _LCD_command LCD_command `(v  1 e 1 0 ]
+{
+[v LCD_command@cmd cmd `uc  1 a 1 wreg ]
+[v LCD_command@cmd cmd `uc  1 a 1 wreg ]
+"37
+[v LCD_command@cmd cmd `uc  1 a 1 2 ]
+"43
+} 0
+"10
+[v _LCD_Write_String LCD_Write_String `(v  1 e 1 0 ]
+{
+"12
+[v LCD_Write_String@i i `i  1 a 2 8 ]
+"10
+[v LCD_Write_String@Str Str `*.26uc  1 p 2 3 ]
+"14
+} 0
+"44
+[v _LCD_write_char LCD_write_char `(v  1 e 1 0 ]
+{
+[v LCD_write_char@ch ch `uc  1 a 1 wreg ]
+[v LCD_write_char@ch ch `uc  1 a 1 wreg ]
+"46
+[v LCD_write_char@ch ch `uc  1 a 1 2 ]
+"52
+} 0
+"10 C:\Users\30698\MPLABXProjects\Magnetic_caliper.X\ADC.c
+[v _ADC_read ADC_read `(i  1 e 2 0 ]
+{
+"17
+[v ADC_read@ADC_val ADC_val `ui  1 a 2 4 ]
+"19
+} 0
+"5
+[v _ADC_init ADC_init `(v  1 e 1 0 ]
+{
+"9
+} 0
