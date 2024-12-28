@@ -21,16 +21,16 @@ void putch(char bt)
     while(!TXIF);
     TXREG=bt;
 }
-char getch()
-{
+//char getch()
+//{
    
    // {
    //     CREN=0;
    //     CREN=1;
    // }
     
-     while(!RCIF);   
-     return RCREG;
+    // while(!RCIF);   
+  //   return RCREG;
    
 }
 

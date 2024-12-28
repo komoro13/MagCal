@@ -1,6 +1,7 @@
 #include <xc.h>
 #include "LCD.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "config.h"
 #include "UART.h"
 #include "ADC.h"
@@ -47,7 +48,7 @@ int main()
     {   
         outcome = ADC_read();
         
-        itoa(buffer,outcome,10);
+        sprintf(buffer,sizeof(buffer),"%d", outcome);
         LCD_Write_String("ADC: ");
         LCD_Write_String(buffer);
         

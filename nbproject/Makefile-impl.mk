@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Magnetic_caliper.X
+PROJECTNAME=MagCal
 
 # Active Configuration
 DEFAULTCONF=default
