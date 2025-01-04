@@ -32,7 +32,6 @@ void putch(char bt)
     // while(!RCIF);   
   //   return RCREG;
    
-}
 
 void UART_send_string(char* str)
 {

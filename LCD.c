@@ -3,7 +3,7 @@
 #include "I2C.h"
 #include "config.h"
 
-#define EN RC7
+#define EN RC7  
 #define RW RC6
 #define RS RC5
 
