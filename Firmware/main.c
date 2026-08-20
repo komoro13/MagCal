@@ -377,8 +377,15 @@ int main(void)
         
         if (PORTEbits.RE6 == 1)
         {
-            normalized_max = 0;
-            normalized_min = 30000;
+             __delay_ms(3000);
+            while(1)
+            {
+                result = getAveragedReadings();
+                sprintf(res,"r: %d",result);
+                LCD_print_string(res, 0);
+                if (PORTEbits.RE6 == 1)
+                    break;
+            }
         }
         ClrWdt();
     }    
