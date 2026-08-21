@@ -55,17 +55,13 @@ The reading is normalized using the **far and close calibration points** and cor
 
 ### Lab / Testing Setup
 
-> Add a photo showing the device during calibration or testing.
+<p align="center">
+  <img src="docs/images/development.jpg" width="700">
+</p>
 
-```text
-docs/images/magcal_testing.jpg
-```
-
-```markdown
-![MagCal testing setup](docs/images/magcal_testing.jpg)
-```
-
----
+<p align="center">
+  <em>Prototype development, debugging, and calibration work.</em>
+</p>
 
 ## System Architecture
 
@@ -391,17 +387,13 @@ A small jumper was added to implement the required reference connection.
 
 ### Hardware Modification
 
-> Add a close-up photograph of the PCB jumper here.
+<p align="center">
+  <img src="docs/images/eratta.jpg" width="600">
+</p>
 
-```text
-docs/images/adc_errata_jumper.jpg
-```
-
-```markdown
-![ADC errata hardware modification](docs/images/adc_errata_jumper.jpg)
-```
-
-**Figure:** Close-up of the hardware modification made during ADC debugging to accommodate the PIC24FJ128GC010 ADC reference requirements.
+<p align="center">
+  <em>Hardware modification implementing the PIC24FJ128GC010 ADC errata workaround.</em>
+</p>
 
 This modification is intentionally visible in the project documentation because it represents an important part of the engineering process: identifying a silicon/device-specific problem, finding the relevant information in the manufacturer's documentation, and implementing a hardware-level correction on an already fabricated PCB.
 
