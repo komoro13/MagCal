@@ -7,47 +7,32 @@
 
 #define SAMPLING 500
 #define CAL_FAR 6850
-#define CAL_ZERO 21050
-#define CAL_SPAN (CAL_ZERO - CAL_FAR)
+#define CAL_CLOSE 21050
+#define CAL_SPAN (CAL_CLOSE - CAL_FAR)
+#define FAR_BASELINE_CALIBRATE_TRIGGER_THRESHOLD 10000
+#define CLOSE_CALIBRATION_REQUESTED() (PORTEbits.RE7 == 1)
+#define FAR_BASELINE_MIN 6400
+#define FAR_BASELINE_MAX 7000
 
 #include "LCD.h"
 #include "ADC.h"
 #include "HLVD.h"
 #include <stdio.h>
 
-void init()
+void init_GPIO()
 {
     TRISB = 0;
     ANSELE = 0;
     TRISE = 0;
-    //LATB = 0xFF;
     TRISD = 0;
     TRISFbits.TRISF5 = 1;
     ANSFbits.ANSELF5 = 1;
     
 }
 
-short int mean_signed_short(const short int arr[], int size)
+void initialize_system()
 {
-    int i;
-    long sum = 0;
-
-    for(i = 0; i < size; i++)
-    {
-        sum += arr[i];
-    }
-
-    return sum / size;
-}
-
-short int getBaselineDifference(short int min, short int max)
-{   
-   return (min + max) / 2;
-}
-
-void boot()
-{
-      init();
+    init_GPIO();
     __delay_ms(1000);
     RED_LED = 1;    
     HLVD_init();
@@ -56,8 +41,8 @@ void boot()
     TRISEbits.TRISE7 = 1;
     TRISEbits.TRISE6 = 1;
 }
-volatile int low_battery = 0;
 
+volatile int low_battery = 0;
 
 void __attribute__((interrupt, no_auto_psv)) _LVDInterrupt(void)
 {
@@ -66,322 +51,338 @@ void __attribute__((interrupt, no_auto_psv)) _LVDInterrupt(void)
     low_battery = 1;
 }
 
-void warmup()
+void lowBatteryMessage()
 {
-     LCD_print_string("Warming up...",0);
-    
-     /*for (int i = 0; i < 450; i++)
-     {
-        YELLOW_LED = 0;
-        __delay_ms(1000);
-        YELLOW_LED = 1;
-        __delay_ms(1000);
-        ClrWdt();
-     }
-      */
-     __delay_ms(15000);
-}
-
-short int getAveragedReadings()
-{
-    signed short int readings_array[SAMPLING];
-    
-    for (int i = 0; i < SAMPLING; i++)
-    {
-        readings_array[i] = ADC16_read();
-        __delay_ms(1);
-     }
-     return mean_signed_short(readings_array, SAMPLING);
-}
-
-short int getBaseline(int a)
-{
-    
-    YELLOW_LED = 1;
-    
-    signed short int readings_array[SAMPLING];
-   
-    
-    for (int i = 0; i < SAMPLING; i++)
-    {
-        readings_array[i] = ADC16_read();
-        if ((readings_array[i] < 6400 || readings_array[i] > 7000) && a ==1) 
-        {
-            YELLOW_LED = 0;
-            return -1;
-        }
-        __delay_ms(1);
-     }
-    GREEN_LED = 1;
-    __delay_ms(115);
-    GREEN_LED = 0;
-    GREEN_LED = 1;
-    __delay_ms(115);
-    GREEN_LED = 0;
-    GREEN_LED = 1;
-    __delay_ms(115);
-    GREEN_LED = 0;
-     YELLOW_LED = 0;
-     return mean_signed_short(readings_array, SAMPLING);
-}
-
-
-void update_lcd(char *maxres, char *minres, char *res)
-{
-    LCD_print_string(res, 0);
-    LCD_command(0xc0);
-    LCD_print_string("l:",1);
-    LCD_print_string(minres,1);
-    LCD_print_string("h:",1);
-    LCD_print_string(maxres,1);
-}
-
-float value_map_1(float reading)
-{
-    if      (reading >= 0.985) return 0.00;
-    else if (reading >= 0.945) return 0.25;
-    else if (reading >= 0.930) return 0.50;
-    else if (reading >= 0.920) return 0.75;
-    else if (reading >= 0.900) return 1.00;
-
-    else if (reading >= 0.885) return 1.25;
-    else if (reading >= 0.870) return 1.50;
-    else if (reading >= 0.855) return 1.75;
-    else if (reading >= 0.840) return 2.00;
-
-    else if (reading >= 0.825) return 2.25;
-    else if (reading >= 0.810) return 2.50;
-    else if (reading >= 0.795) return 2.75;
-    else if (reading >= 0.780) return 3.00;
-
-    else if (reading >= 0.765) return 3.25;
-    else if (reading >= 0.750) return 3.50;
-    else if (reading >= 0.735) return 3.75;
-    else if (reading >= 0.720) return 4.00;
-
-    else if (reading >= 0.705) return 4.25;
-    else if (reading >= 0.690) return 4.50;
-    else if (reading >= 0.675) return 4.75;
-
-    else return 5.00;
-}
-
-float value_map_990(float reading)
-{
-    if      (reading >= 0.991) return 0.00;
-    else if (reading >= 0.980) return 0.25;
-    else if (reading >= 0.955) return 0.50;
-    else if (reading >= 0.921) return 0.75;
-    else if (reading >= 0.910) return 1.00;
-
-    else if (reading >= 0.895) return 1.25;
-    else if (reading >= 0.888) return 1.50;
-    else if (reading >= 0.880) return 1.75;
-    else if (reading >= 0.865) return 2.00;
-
-    else if (reading >= 0.850) return 2.25;
-    else if (reading >= 0.835) return 2.50;
-    else if (reading >= 0.820) return 2.75;
-    else if (reading >= 0.807) return 3.00;
-
-    else if (reading >= 0.795) return 3.25;
-    else if (reading >= 0.783) return 3.50;
-    else if (reading >= 0.767) return 3.75;
-
-    else return 4.00;
-}
-
-float value_map_980(float reading)
-{
-    if      (reading >= 0.985) return 0.00;
-    else if (reading >= 0.975) return 0.25;
-    else if (reading >= 0.955) return 0.50;
-    else if (reading >= 0.925) return 0.75;
-    else if (reading >= 0.910) return 1.00;
-
-    else if (reading >= 0.895) return 1.25;
-    else if (reading >= 0.888) return 1.50;
-    else if (reading >= 0.867) return 1.75;
-    else if (reading >= 0.852) return 2.00;
-
-    else if (reading >= 0.810) return 2.25;
-    else if (reading >= 0.832) return 2.50;
-    else if (reading >= 0.814) return 2.75;
-    else if (reading >= 0.792) return 3.00;
-
-    else if (reading >= 0.785) return 3.25;
-    else if (reading >= 0.770) return 3.50;
-    else if (reading >= 0.755) return 3.75;
-
-    else return 4.00;
-}
-
-float value_map_970(float reading)
-{
-    if      (reading >= 0.965) return 0.00;
-    else if (reading >= 0.950) return 0.25;
-    else if (reading >= 0.925) return 0.50;
-    else if (reading >= 0.940) return 0.75;
-    else if (reading >= 0.910) return 1.00; //OK
-
-    else if (reading >= 0.920) return 1.25;
-    else if (reading >= 0.910) return 1.50;
-    else if (reading >= 0.900) return 1.75;
-    else if (reading >= 0.890) return 2.00;
-
-    else if (reading >= 0.880) return 2.25;
-    else if (reading >= 0.870) return 2.50;
-    else if (reading >= 0.860) return 2.75;
-    else if (reading >= 0.850) return 3.00;
-
-    else if (reading >= 0.840) return 3.25;
-    else if (reading >= 0.830) return 3.50;
-    else if (reading >= 0.820) return 3.75;
-    else if (reading >= 0.810) return 4.00;
-
-    else if (reading >= 0.800) return 4.25;
-    else if (reading >= 0.790) return 4.50;
-    else if (reading >= 0.780) return 4.75;
-
-    else return 5.00;
-}
-
-float value_map_960(float reading)
-{
-    if      (reading >= 0.950) return 0.00;
-    else if (reading >= 0.940) return 0.25;
-    else if (reading >= 0.930) return 0.50;
-    else if (reading >= 0.920) return 0.75;
-    else if (reading >= 0.910) return 1.00;
-
-    else if (reading >= 0.900) return 1.25;
-    else if (reading >= 0.890) return 1.50;
-    else if (reading >= 0.880) return 1.75;
-    else if (reading >= 0.870) return 2.00;
-
-    else if (reading >= 0.860) return 2.25;
-    else if (reading >= 0.850) return 2.50;
-    else if (reading >= 0.840) return 2.75;
-    else if (reading >= 0.830) return 3.00;
-
-    else if (reading >= 0.820) return 3.25;
-    else if (reading >= 0.810) return 3.50;
-    else if (reading >= 0.800) return 3.75;
-    else if (reading >= 0.790) return 4.00;
-
-    else if (reading >= 0.780) return 4.25;
-    else if (reading >= 0.770) return 4.50;
-    else if (reading >= 0.760) return 4.75;
-
-    else return 5.00;
-}
-
-int main(void) 
-{
-    
-    boot();
-    
-    signed short int result; 
-    char res[15];
-    char maxres[20] = "0";
-    char minres[20] = "0";
-    signed short int min = 30000;
-    signed short int max = 0;
-    signed short int baseline = 0;
-    signed short int baseline1 = 10;
-    signed short int bresult = 0;
-    signed short int zero = 0;
-    char bline[19] = "0";
-    char value[10] = "0";
-    
-    float normalized_min = 3000;
-    float normalized_max = 0;
-    float normalized_result = 0;
-    float gain_correction = 0;
-    
-    float corrected_baseline = 0;
-    
-    
-    
-    //warmup();     
-   
- 
-        
-    int counter = 0;
-        
-    YELLOW_LED = 0;
-    GREEN_LED = 0;
-
-    while(1)
-    {  
-    
-    if (low_battery)
-    {
     LCD_print_string("Change battery", 0);
 
     while(1)
     {
         ClrWdt();
     }
+}
+
+short int getAveragedReadings(void)
+{
+    long sum = 0;
+
+    for (int i = 0; i < SAMPLING; i++)
+    {
+        sum += ADC16_read();
+        __delay_ms(1);
     }
- 
-        result = getAveragedReadings();
-        //result = getAveragedReadings() - baseline;
-        normalized_result = (float)(getAveragedReadings() - baseline) /(float)(baseline1 - baseline);
-        gain_correction = (baseline1 - baseline) / (float)CAL_SPAN;
-        normalized_result = normalized_result*gain_correction;
-        
-        
-        
-       if (normalized_result < normalized_min) 
-        {
-            normalized_min = normalized_result;
-            sprintf(minres,"%.3f ",normalized_min);
-        }
-        if (normalized_result > normalized_max)
-        {
-          normalized_max = normalized_result;
-          sprintf(maxres,"%.3f",normalized_max);
-        }
-        /*
-         if (result < min) 
-        {
-            min = result;
-            sprintf(minres,"%d ",min);
-        }
-        if (result > max)
-        {
-          max = result;
-          sprintf(maxres,"%d",max);
-        }*/
-        //sprintf(res,"v:%d b:%d",result,baseline);
-        //sprintf(res,"v:%d",result);
-        
-        //sprintf(res,"v:%.3f b:%d",normalized_result,baseline);
-        
-        if (PORTEbits.RE7 == 1)
-        {
-            baseline1 = getBaseline(0);
-        }
-        
-        
-        //update_lcd(maxres, minres, res);
-        //update_lcd(maxres, minres, res);
-        
-        
-        corrected_baseline = (baseline1 - baseline) / (float)CAL_SPAN;
-        if (corrected_baseline<=0.970)
-            sprintf(res,"t: %.3f a:%.3f",value_map_960(normalized_result), corrected_baseline);
-        else if (corrected_baseline <= 0.980)
-            sprintf(res,"t: %.3f b:%.3f",value_map_970(normalized_result), corrected_baseline);
-        else if (corrected_baseline <= 0.990)
-            sprintf(res,"t: %.3f c:%.3f",value_map_980(normalized_result), corrected_baseline);
-        else if (corrected_baseline <= 1)
-            sprintf(res,"t: %.3f d:%.3f",value_map_990(normalized_result), corrected_baseline);
-        else sprintf(res,"t: %.3f e:%.3f",value_map_1(normalized_result), corrected_baseline);
-        //sprintf(res,"r: %d",result);
+
+    return (short int)(sum / SAMPLING);
+}
+
+void calibrationSuccessSignal()
+{
+    GREEN_LED = 1;
+    __delay_ms(115);
+    GREEN_LED = 0;
+    GREEN_LED = 1;
+    __delay_ms(115);
+    GREEN_LED = 0;
+    GREEN_LED = 1;
+    __delay_ms(115);
+    GREEN_LED = 0;
+    YELLOW_LED = 0;
+}
+
+short int getBaseline(int validate_range)
+{
     
+    YELLOW_LED = 1;
+    
+    long sum = 0;
+    short int read;
+     
+    for (int i = 0; i < SAMPLING; i++)
+    {
+        read = ADC16_read();
+        sum += read;
         
+        if ((read < FAR_BASELINE_MIN || read > FAR_BASELINE_MAX) && validate_range) 
+        {
+            YELLOW_LED = 0;
+            return -1;
+        }
+        __delay_ms(1);
+     }
+     calibrationSuccessSignal();
+     return (short int)(sum / SAMPLING);
+}
+
+
+
+typedef struct
+{
+    float threshold;
+    float thickness;
+} CalibrationPoint;
+
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
+/* corrected_baseline > 1.000 */
+static const CalibrationPoint calibration_1[] =
+{
+    {0.985f, 0.00f},
+    {0.945f, 0.25f},
+    {0.930f, 0.50f},
+    {0.920f, 0.75f},
+    {0.900f, 1.00f},
+    {0.885f, 1.25f},
+    {0.870f, 1.50f},
+    {0.855f, 1.75f},
+    {0.840f, 2.00f},
+    {0.825f, 2.25f},
+    {0.810f, 2.50f},
+    {0.795f, 2.75f},
+    {0.780f, 3.00f},
+    {0.765f, 3.25f},
+    {0.750f, 3.50f},
+    {0.735f, 3.75f},
+    {0.720f, 4.00f},
+    {0.705f, 4.25f},
+    {0.690f, 4.50f},
+    {0.675f, 4.75f}
+};
+
+/* corrected_baseline <= 1.000 */
+static const CalibrationPoint calibration_990[] =
+{
+    {0.991f, 0.00f},
+    {0.980f, 0.25f},
+    {0.955f, 0.50f},
+    {0.921f, 0.75f},
+    {0.910f, 1.00f},
+    {0.895f, 1.25f},
+    {0.888f, 1.50f},
+    {0.880f, 1.75f},
+    {0.865f, 2.00f},
+    {0.850f, 2.25f},
+    {0.835f, 2.50f},
+    {0.820f, 2.75f},
+    {0.807f, 3.00f},
+    {0.795f, 3.25f},
+    {0.783f, 3.50f},
+    {0.767f, 3.75f}
+};
+
+/* corrected_baseline <= 0.990 */
+static const CalibrationPoint calibration_980[] =
+{
+    {0.985f, 0.00f},
+    {0.975f, 0.25f},
+    {0.955f, 0.50f},
+    {0.925f, 0.75f},
+    {0.910f, 1.00f},
+    {0.895f, 1.25f},
+    {0.888f, 1.50f},
+    {0.867f, 1.75f},
+    {0.852f, 2.00f},
+
+    /* Verify these three against your calibration data:
+       they are not in descending threshold order. */
+    {0.810f, 2.25f},
+    {0.832f, 2.50f},
+    {0.814f, 2.75f},
+
+    {0.792f, 3.00f},
+    {0.785f, 3.25f},
+    {0.770f, 3.50f},
+    {0.755f, 3.75f}
+};
+
+/* corrected_baseline <= 0.980 */
+static const CalibrationPoint calibration_970[] =
+{
+    {0.965f, 0.00f},
+    {0.950f, 0.25f},
+
+    /* Verify this region against your calibration data:
+       thresholds are not monotonically descending. */
+    {0.925f, 0.50f},
+    {0.940f, 0.75f},
+    {0.910f, 1.00f},
+    {0.920f, 1.25f},
+    {0.910f, 1.50f},
+
+    {0.900f, 1.75f},
+    {0.890f, 2.00f},
+    {0.880f, 2.25f},
+    {0.870f, 2.50f},
+    {0.860f, 2.75f},
+    {0.850f, 3.00f},
+    {0.840f, 3.25f},
+    {0.830f, 3.50f},
+    {0.820f, 3.75f},
+    {0.810f, 4.00f},
+    {0.800f, 4.25f},
+    {0.790f, 4.50f},
+    {0.780f, 4.75f}
+};
+
+/* corrected_baseline <= 0.970 */
+static const CalibrationPoint calibration_960[] =
+{
+    {0.950f, 0.00f},
+    {0.940f, 0.25f},
+    {0.930f, 0.50f},
+    {0.920f, 0.75f},
+    {0.910f, 1.00f},
+    {0.900f, 1.25f},
+    {0.890f, 1.50f},
+    {0.880f, 1.75f},
+    {0.870f, 2.00f},
+    {0.860f, 2.25f},
+    {0.850f, 2.50f},
+    {0.840f, 2.75f},
+    {0.830f, 3.00f},
+    {0.820f, 3.25f},
+    {0.810f, 3.50f},
+    {0.800f, 3.75f},
+    {0.790f, 4.00f},
+    {0.780f, 4.25f},
+    {0.770f, 4.50f},
+    {0.760f, 4.75f}
+};
+
+float mapReading(float reading,
+                 const CalibrationPoint *table,
+                 unsigned int size,
+                 float maximum_thickness)
+{
+    for (unsigned int i = 0; i < size; i++)
+    {
+        if (reading >= table[i].threshold)
+            return table[i].thickness;
+    }
+
+    return maximum_thickness;
+}
+
+void updateResultBuffer(char *res,
+                        float normalized_result,
+                        float corrected_baseline)
+{
+    float thickness;
+    char calibration_id;
+
+    if (corrected_baseline <= 0.970f)
+    {
+        thickness = mapReading(
+            normalized_result,
+            calibration_960,
+            ARRAY_SIZE(calibration_960),
+            5.00f
+        );
+
+        calibration_id = 'a';
+    }
+    else if (corrected_baseline <= 0.980f)
+    {
+        thickness = mapReading(
+            normalized_result,
+            calibration_970,
+            ARRAY_SIZE(calibration_970),
+            5.00f
+        );
+
+        calibration_id = 'b';
+    }
+    else if (corrected_baseline <= 0.990f)
+    {
+        thickness = mapReading(
+            normalized_result,
+            calibration_980,
+            ARRAY_SIZE(calibration_980),
+            4.00f
+        );
+
+        calibration_id = 'c';
+    }
+    else if (corrected_baseline <= 1.000f)
+    {
+        thickness = mapReading(
+            normalized_result,
+            calibration_990,
+            ARRAY_SIZE(calibration_990),
+            4.00f
+        );
+
+        calibration_id = 'd';
+    }
+    else
+    {
+        thickness = mapReading(
+            normalized_result,
+            calibration_1,
+            ARRAY_SIZE(calibration_1),
+            5.00f
+        );
+
+        calibration_id = 'e';
+    }
+
+    sprintf(
+        res,
+        "t: %.3f %c:%.3f",
+        thickness,
+        calibration_id,
+        corrected_baseline
+    );
+}
+
+int main(void) 
+{
+    
+    initialize_system();
+    
+    signed short int result; 
+    char res[32];
+        
+    signed short int baselineFar = 0;
+    signed short int baselineClose = 10;
+    signed short int newFarBaseline = 0;
+
+    float normalized_result = 0;
+    float gain_correction = 0;
+    
+    float corrected_baseline = 0;
+               
+    YELLOW_LED = 0;
+    GREEN_LED = 0;
+
+    while(1)
+    {  
+        
+        if (low_battery)
+            lowBatteryMessage();
+        
+        result = getAveragedReadings();
+        
+        if ((baselineClose - baselineFar) != 0)
+        {
+            normalized_result = (float)(result - baselineFar) /(float)(baselineClose - baselineFar);
+            gain_correction = (baselineClose - baselineFar) / (float)CAL_SPAN;
+            normalized_result *= gain_correction;
+        }
+        
+        if (CLOSE_CALIBRATION_REQUESTED())
+        {
+            baselineClose = getBaseline(0);
+        }
+        
+        if (result < FAR_BASELINE_CALIBRATE_TRIGGER_THRESHOLD)
+        {        
+            newFarBaseline = getBaseline(1);
+            if (newFarBaseline != -1)
+                baselineFar = newFarBaseline;
+        }
+          
+        corrected_baseline = (baselineClose - baselineFar) / (float)CAL_SPAN;
+        
+        updateResultBuffer(res, normalized_result, corrected_baseline);
         
         LCD_print_string(res, 0);
         
@@ -391,25 +392,6 @@ int main(void)
         
         LCD_print_string(res, 1);
         
-        if (getAveragedReadings() < 10000)
-        {        
-            bresult = getBaseline(1);
-            if (bresult != -1)
-                baseline = bresult;
-        }
-        
-        if (PORTEbits.RE6 == 1)
-        {
-             __delay_ms(3000);
-            while(1)
-            {
-                result = getAveragedReadings();
-                sprintf(res,"r: %d",result);
-                LCD_print_string(res, 0);
-                if (PORTEbits.RE6 == 1)
-                    break;
-            }
-        }
         ClrWdt();
     }    
     return 0;
