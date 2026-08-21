@@ -12,6 +12,7 @@
 
 #include "LCD.h"
 #include "ADC.h"
+#include "HLVD.h"
 #include <stdio.h>
 
 void init()
@@ -49,10 +50,20 @@ void boot()
       init();
     __delay_ms(1000);
     RED_LED = 1;    
+    HLVD_init();
     LCD_init();
     ADC16_init();
     TRISEbits.TRISE7 = 1;
     TRISEbits.TRISE6 = 1;
+}
+volatile int low_battery = 0;
+
+
+void __attribute__((interrupt, no_auto_psv)) _LVDInterrupt(void)
+{
+    IEC4bits.HLVDIE = 0;      // prevent another HLVD interrupt
+    IFS4bits.HLVDIF = 0;
+    low_battery = 1;
 }
 
 void warmup()
@@ -94,7 +105,7 @@ short int getBaseline(int a)
     for (int i = 0; i < SAMPLING; i++)
     {
         readings_array[i] = ADC16_read();
-        if ((readings_array[i] < 6550 || readings_array[i] > 6950) && a ==1) 
+        if ((readings_array[i] < 6400 || readings_array[i] > 7000) && a ==1) 
         {
             YELLOW_LED = 0;
             return -1;
@@ -267,6 +278,7 @@ float value_map_960(float reading)
 
 int main(void) 
 {
+    
     boot();
     
     signed short int result; 
@@ -299,9 +311,20 @@ int main(void)
         
     YELLOW_LED = 0;
     GREEN_LED = 0;
-        
+
     while(1)
     {  
+    
+    if (low_battery)
+    {
+    LCD_print_string("Change battery", 0);
+
+    while(1)
+    {
+        ClrWdt();
+    }
+    }
+ 
         result = getAveragedReadings();
         //result = getAveragedReadings() - baseline;
         normalized_result = (float)(getAveragedReadings() - baseline) /(float)(baseline1 - baseline);

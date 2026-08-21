@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=ADC.c LCD.c main.c
+SOURCEFILES_QUOTED_IF_SPACED=ADC.c LCD.c main.c HLVD.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADC.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/ADC.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADC.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HLVD.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/ADC.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/HLVD.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/ADC.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/main.o
+OBJECTFILES=${OBJECTDIR}/ADC.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/main.o ${OBJECTDIR}/HLVD.o
 
 # Source Files
-SOURCEFILES=ADC.c LCD.c main.c
+SOURCEFILES=ADC.c LCD.c main.c HLVD.c
 
 
 
@@ -107,6 +107,12 @@ ${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/b2910d0d5a4e818f4465
 	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main.c  -o ${OBJECTDIR}/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
+${OBJECTDIR}/HLVD.o: HLVD.c  .generated_files/flags/default/57715b9713e9a1bf2a82353e3c77bf706f4b2231 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HLVD.o.d 
+	@${RM} ${OBJECTDIR}/HLVD.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  HLVD.c  -o ${OBJECTDIR}/HLVD.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/HLVD.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
 else
 ${OBJECTDIR}/ADC.o: ADC.c  .generated_files/flags/default/bcb7243a75e9918721a54326c538b521c07f0520 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
@@ -125,6 +131,12 @@ ${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/76004e14b1792039df37
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main.c  -o ${OBJECTDIR}/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/HLVD.o: HLVD.c  .generated_files/flags/default/dfaeb7ccc3f237c6c9d37af871207cd984ab610a .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HLVD.o.d 
+	@${RM} ${OBJECTDIR}/HLVD.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  HLVD.c  -o ${OBJECTDIR}/HLVD.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/HLVD.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 endif
 
