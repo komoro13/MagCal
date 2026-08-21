@@ -98,7 +98,7 @@ The reading is normalized using the **far and close calibration points** and cor
 The firmware acquires sensor readings, averages multiple ADC samples, normalizes the measurement using close and far calibration baselines, selects the appropriate calibration dataset, and converts the normalized reading into a thickness estimate.
 
 ---
-
+ 
 ## Hardware
 
 The electronics were designed as a custom PCB using **KiCad**.
