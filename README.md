@@ -132,27 +132,17 @@ Hardware/
 
 > Add a front-side KiCad 3D render here.
 
-```text
-docs/images/pcb_front.png
-```
+<h2>PCB Design</h2>
 
-```markdown
-![PCB front render](docs/images/pcb_front.png)
-```
+<p align="center">
+  <img src="docs/images/kicad_render.png"
+       alt="KiCad PCB render"
+       width="700">
+</p>
 
-### PCB Back
-
-> Optional second render.
-
-```text
-docs/images/pcb_back.png
-```
-
-```markdown
-![PCB back render](docs/images/pcb_back.png)
-```
-
----
+<p align="center">
+  <em>KiCad 3D render of the MagCal PCB.</em>
+</p>
 
 ## Firmware
 
