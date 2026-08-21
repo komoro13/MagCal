@@ -27,21 +27,31 @@ The complete project includes the firmware, KiCad hardware files, mechanical des
 
 ---
 
-## Photos
+## Prototype
 
-### Prototype / Final Hardware
+<p align="center">
+  <img src="full_system.jpg" width="700">
+</p>
 
-> Add a clear photo of the assembled device or working prototype here.
+<p align="center">
+  <em>Complete MagCal prototype showing the sensing probe, magnetic target, control electronics, LCD interface, and battery supply.</em>
+</p>
 
-```text
-docs/images/magcal_prototype.jpg
-```
+## How It Works
 
-Example Markdown:
+MagCal measures material thickness using a **permanent magnet** on one side of the material and a **Hall-effect sensor** on the other.
 
-```markdown
-![MagCal prototype](docs/images/magcal_prototype.jpg)
-```
+The Hall sensor measures the magnetic field, which changes with the distance between the sensor and magnet. The **PIC24FJ128GC010** samples this signal using its internal ADC and averages **500 samples** to reduce noise.
+
+The reading is normalized using the **far and close calibration points** and corrected for variations in the calibration span. The firmware then selects an experimentally generated calibration table and maps the reading to a thickness value displayed on the LCD.
+
+<p align="center">
+  <img src="demo.jpg" width="700">
+</p>
+
+<p align="center">
+  <em>Measuring an acoustic guitar soundboard with the magnet inside the instrument and the sensing probe outside.</em>
+</p>
 
 ### Lab / Testing Setup
 
