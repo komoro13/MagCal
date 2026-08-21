@@ -455,45 +455,7 @@ The system was experimentally characterized for:
 
 These observations influenced both the calibration process and the firmware design.
 
-### Drift / Stability Graph
 
-> Add a graph showing baseline drift or repeated measurements over time.
-
-```text
-docs/images/drift_plot.png
-```
-
-```markdown
-![Baseline drift measurement](docs/images/drift_plot.png)
-```
-
----
-
-## Calibration Results
-
-> Add one representative calibration graph here.
-
-A useful plot would show:
-
-```text
-Normalized sensor reading
-        vs
-Known thickness
-```
-
-Suggested file:
-
-```text
-docs/images/calibration_curve.png
-```
-
-```markdown
-![Calibration curve](docs/images/calibration_curve.png)
-```
-
-Avoid presenting a final accuracy or resolution claim here unless it is supported by validated measurements.
-
----
 
 ## Mechanical Design
 
@@ -511,19 +473,17 @@ Mechanical designs and printable models are available in:
 Mechanical/
 ```
 
-### Mechanical Render
+### Probe Mechanical Render
 
-> Add a FreeCAD or STL render here if useful.
+<p align="center">
+  <img src="docs/images/probe_freecad.png"
+       alt="MagCal sensing probe FreeCAD render"
+       width="500">
+</p>
 
-```text
-docs/images/mechanical_render.png
-```
-
-```markdown
-![Mechanical assembly](docs/images/mechanical_render.png)
-```
-
----
+<p align="center">
+  <em>FreeCAD render of the MagCal sensing probe enclosure.</em>
+</p>
 
 ## Low-Voltage Protection
 
