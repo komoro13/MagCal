@@ -130,8 +130,6 @@ Hardware/
 
 ### PCB Render
 
-> Add a front-side KiCad 3D render here.
-
 <h2>PCB Design</h2>
 
 <p align="center">
