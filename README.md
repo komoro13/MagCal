@@ -55,13 +55,21 @@ The reading is normalized using the **far and close calibration points** and cor
 
 ### Lab / Testing Setup
 
-<p align="center">
-  <img src="docs/images/development.jpg" width="700">
-</p>
+<h2>Development</h2>
 
-<p align="center">
-  <em>Prototype development, debugging, and calibration work.</em>
-</p>
+<div style="text-align: center; margin: 20px 0;">
+  <img
+    src="/docs/images/development.jpg"
+    alt="Prototype development, debugging, and calibration"
+    style="
+      max-width: 700px;
+      width: 90%;
+      height: auto;
+      transform: rotate(-90deg);
+    "
+  >
+  <p><em>Prototype development, debugging, and calibration work.</em></p>
+</div>
 
 ## System Architecture
 
