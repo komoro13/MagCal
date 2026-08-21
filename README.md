@@ -332,22 +332,117 @@ When calibration completes successfully, the device gives visual feedback throug
 
 ## ADC Debugging and MCU Errata
 
-One of the most significant engineering challenges in the project involved unexpected ADC behavior.
+One of the most significant debugging challenges during the development of MagCal involved the PIC24FJ128GC010 ADC.
 
-During development, sensor readings did not initially behave as expected. The problem required separating possible causes across:
+During early testing, the ADC produced unexpected readings that initially appeared to be caused by the Hall sensor, analog circuitry, or firmware configuration. Debugging therefore involved testing the measurement chain step by step and comparing the observed ADC behavior with the PIC24FJ128GC010 documentation and silicon errata.
 
-- Sensor output
-- Analog hardware
-- ADC configuration
-- Reference behavior
-- Firmware
-- Microcontroller-specific behavior
+The issue was eventually traced to documented device-specific ADC behavior rather than to the Hall sensor itself.
 
-The PIC24 device documentation and errata were reviewed during debugging, and the ADC acquisition approach was revised to obtain more reliable measurements.
+### Initial ADC Implementation
 
-This became an important part of the project because the issue could not be solved purely at the application-code level.
+The first implementation used the PIC24's pipeline ADC. During testing, abnormal ADC behavior was observed over part of the expected input range.
+
+This was particularly problematic for MagCal because the measurement depends on relatively small changes in the Hall sensor output. An ADC error that might be acceptable in another application could directly translate into an incorrect thickness measurement.
+
+The problem was investigated by:
+
+- Testing known and controlled ADC input conditions
+- Comparing raw ADC values against the expected sensor behavior
+- Checking the analog input configuration
+- Verifying ADC initialization and reference configuration
+- Reviewing the PIC24FJ128GC010 datasheet and silicon errata
+- Separating sensor behavior from ADC behavior during testing
+
+The investigation showed that the unexpected measurements were related to documented ADC limitations/errata of the microcontroller.
 
 ---
+
+### Moving to the 16-bit Sigma-Delta ADC
+
+To improve the measurement path, the design was moved to the PIC24FJ128GC010's **16-bit Sigma-Delta ADC** using a differential measurement configuration.
+
+The firmware was updated accordingly, including the ADC initialization sequence and readiness/calibration handling required by the peripheral.
+
+This provided a more suitable acquisition path for the low-frequency precision measurement performed by MagCal.
+
+The Hall sensor signal is sampled repeatedly and the resulting ADC measurements are averaged before being used by the calibration algorithm.
+
+---
+
+### ADC Reference / REFPUMP Issue
+
+Another important issue involved the ADC reference circuitry.
+
+During debugging, incorrect or unstable ADC behavior was traced to the reference configuration required by the Sigma-Delta ADC. The PIC24FJ128GC010 documentation and errata were used to determine the required hardware configuration.
+
+A hardware modification was therefore made to the existing PCB rather than manufacturing a completely new revision of the board.
+
+A small jumper was added to implement the required reference connection.
+
+### Hardware Modification
+
+> Add a close-up photograph of the PCB jumper here.
+
+```text
+docs/images/adc_errata_jumper.jpg
+```
+
+```markdown
+![ADC errata hardware modification](docs/images/adc_errata_jumper.jpg)
+```
+
+**Figure:** Close-up of the hardware modification made during ADC debugging to accommodate the PIC24FJ128GC010 ADC reference requirements.
+
+This modification is intentionally visible in the project documentation because it represents an important part of the engineering process: identifying a silicon/device-specific problem, finding the relevant information in the manufacturer's documentation, and implementing a hardware-level correction on an already fabricated PCB.
+
+---
+
+### ADC Initialization
+
+The ADC firmware also had to account for the peripheral's required initialization and calibration sequence.
+
+In particular, ADC operation could not simply begin immediately after enabling the peripheral. The firmware had to wait for the appropriate ADC ready/calibration state before measurements could be considered valid.
+
+This was incorporated into the ADC initialization code in:
+
+```text
+Firmware/ADC.c
+```
+
+---
+
+### Debugging Outcome
+
+Resolving the ADC problems required debugging across several layers of the system:
+
+```text
+Hall Sensor
+     │
+     ▼
+Analog Signal
+     │
+     ▼
+PCB / Reference Circuitry
+     │
+     ▼
+PIC24 ADC Hardware
+     │
+     ▼
+ADC Configuration
+     │
+     ▼
+Raw ADC Samples
+     │
+     ▼
+Averaging / Calibration
+     │
+     ▼
+Thickness Measurement
+```
+
+Rather than compensating for the unexpected readings in software, the underlying ADC and reference problems were investigated and corrected.
+
+This debugging process was one of the most important parts of the project because it required working across **firmware, analog electronics, PCB hardware, microcontroller documentation, and silicon errata** rather than treating each area independently.
 
 ## Sensor Drift
 
