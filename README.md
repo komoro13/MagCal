@@ -53,8 +53,6 @@ The reading is normalized using the **far and close calibration points** and cor
   <em>Measuring an acoustic guitar soundboard with the magnet inside the instrument and the sensing probe outside.</em>
 </p>
 
-### Lab / Testing Setup
-
 <h2>Development</h2>
 
 <div style="text-align: center; margin: 20px 0;">
@@ -127,8 +125,6 @@ The PCB schematic, layout, Gerbers, and production outputs are available in:
 ```text
 Hardware/
 ```
-
-### PCB Render
 
 <h2>PCB Design</h2>
 
@@ -339,6 +335,12 @@ One of the most significant debugging challenges during the development of MagCa
 During early testing, the ADC produced unexpected readings that initially appeared to be caused by the Hall sensor, analog circuitry, or firmware configuration. Debugging therefore involved testing the measurement chain step by step and comparing the observed ADC behavior with the PIC24FJ128GC010 documentation and silicon errata.
 
 The issue was eventually traced to documented device-specific ADC behavior rather than to the Hall sensor itself.
+
+The PIC24FJ128GC010 is affected by **Erratum #5 in Table 2** of the device errata, concerning the ADC subsystem. The recommended workaround requires a hardware modification to the ADC reference circuitry.
+
+The Microchip silicon errata document used during debugging is included in the [`Datasheets/`](Datasheets/) directory.
+
+The modification was implemented directly on the PCB using a jumper wire, as shown below.
 
 ### Initial ADC Implementation
 
