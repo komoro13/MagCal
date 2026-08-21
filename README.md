@@ -30,7 +30,7 @@ The complete project includes the firmware, KiCad hardware files, mechanical des
 ## Prototype
 
 <p align="center">
-  <img src="full_system.jpg" width="700">
+  <img src="/docs/images/full_system.jpg" width="700">
 </p>
 
 <p align="center">
@@ -46,7 +46,7 @@ The Hall sensor measures the magnetic field, which changes with the distance bet
 The reading is normalized using the **far and close calibration points** and corrected for variations in the calibration span. The firmware then selects an experimentally generated calibration table and maps the reading to a thickness value displayed on the LCD.
 
 <p align="center">
-  <img src="demo.jpg" width="700">
+  <img src="/docs/images/demo.jpg" width="700">
 </p>
 
 <p align="center">
